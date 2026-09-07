@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://secureauth-backend-udsa.onrender.com/api",
+  baseURL: "https://secureauth-8aq1.onrender.com/api",
   timeout: 10000,
   withCredentials: true, 
 });
@@ -44,7 +44,7 @@ API.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          "https://secureauth-backend-udsa.onrender.com/api/users/refresh",
+          "https://secureauth-8aq1.onrender.com/api/users/refresh",
           {},
           { withCredentials: true },
         );

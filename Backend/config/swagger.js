@@ -20,7 +20,7 @@ const options = {
         description: "Local Development",
       },
       {
-        url: "https://secureauth-backend-udsa.onrender.com/api",
+        url: "https://secureauth-8aq1.onrender.com/api",
         description: "Production",
       },
     ],
