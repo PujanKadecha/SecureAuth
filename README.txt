@@ -3,7 +3,7 @@
 A production-grade full-stack authentication system built with Node.js/Express/MongoDB on the backend and React on the frontend. Includes JWT access/refresh token rotation, Google OAuth2, email verification, TOTP-based 2FA, role-based access control, and activity logging.
 
 **Live app:** https://secureauth-fullstack.vercel.app
-**API:** https://secureauth-backend-wpzt.onrender.com
+**API:** https://secureauth-8aq1.onrender.com
 
 ---
 
@@ -98,7 +98,7 @@ JWT_REFRESH_SECRET=your_refresh_token_secret
 # Google OAuth2
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=https://secureauth-backend-wpzt.onrender.com/api/auth/google/callback
+GOOGLE_CALLBACK_URL=https://secureauth-8aq1.onrender.com/api/auth/google/callback
 
 # Email (Brevo HTTP API)
 BREVO_API_KEY=your_brevo_api_key
