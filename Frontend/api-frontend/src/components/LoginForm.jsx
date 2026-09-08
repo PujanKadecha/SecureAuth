@@ -29,7 +29,7 @@ function LoginForm({ onEmailChange, onPasswordChange, onLogin }) {
       <button
         type="button"
         onClick={() =>
-          (window.location.href = "https://secureauth-8aq1.onrender.com/api/auth/google")
+          (window.location.href = `${process.env.REACT_APP_SERVER_URL}/api/auth/google`)
         }
         className="btn btn-google"
       >

@@ -1,7 +1,8 @@
 import axios from "axios";
+const URL = process.env.REACT_APP_SERVER_URL;
 
 const API = axios.create({
-  baseURL: "https://secureauth-8aq1.onrender.com/api",
+  baseURL: `${URL}/api`,
   timeout: 10000,
   withCredentials: true, 
 });
@@ -44,7 +45,7 @@ API.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          "https://secureauth-8aq1.onrender.com/api/users/refresh",
+          `${URL}/api/users/refresh`,
           {},
           { withCredentials: true },
         );

@@ -61,7 +61,7 @@ exports.googleCallback = catchAsync(async (req, res) => {
   });
 
   return res.redirect(
-    `https://secureauth-fullstack.vercel.app?oauthCode=${code}`,
+    `${process.env.CLIENT_URL}?oauthCode=${code}`,
   );
 });
 
