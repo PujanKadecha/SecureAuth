@@ -15,7 +15,7 @@ import AdminView from "./components/AdminView";
 
 function App() {
   const auth = useAuth();
-  const admin = useAdmin(auth.clearMessages, auth.setErrorMsg, auth.setMessage);
+  const admin = useAdmin();
 
 
   return (
@@ -80,6 +80,8 @@ function App() {
               user={auth.user}
               allUsers={admin.allUsers}
               activityLogs={admin.activityLogs}
+              message={admin.message}
+              errorMsg={admin.errorMsg}
               onRefresh={admin.fetchAdminData}
               onDeleteUser={admin.handleDeleteUser}
               onExportLogs={admin.handleExportLogsCSV}

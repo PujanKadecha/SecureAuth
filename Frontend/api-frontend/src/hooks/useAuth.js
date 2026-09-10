@@ -17,7 +17,7 @@ export function useAuth() {
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [tempUserId, setTempUserId] = useState("");
   const [isSettingUp2FA, setIsSettingUp2FA] = useState(false);
-  const [qrCodeUrl, setQqCodeUrl] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [twoFactorSecret, setTwoFactorSecret] = useState("");
   const [twoFactorSetupCode, setTwoFactorSetupCode] = useState("");
   const [confirmPassword,setConfirmPassword] = useState("");
@@ -232,12 +232,8 @@ export function useAuth() {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("accessToken");
-      const response = await API.put(
-        "/users/profile",
-        { name: editName },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      // Interceptor in api.js attaches the Authorization header automatically
+      const response = await API.put("/users/profile", { name: editName });
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(response.data.user);
       setMessage(response.data.message);
@@ -251,13 +247,8 @@ export function useAuth() {
   const handleSetup2FA = async () => {
     clearMessages();
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await API.post(
-        "/auth/2fa/setup",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      setQqCodeUrl(res.data.qrCodeUrl);
+      const res = await API.post("/auth/2fa/setup", {});
+      setQrCodeUrl(res.data.qrCodeUrl);
       setTwoFactorSecret(res.data.secret);
       setIsSettingUp2FA(true);
     } catch (err) {
@@ -272,12 +263,7 @@ export function useAuth() {
     e.preventDefault();
     clearMessages();
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await API.post(
-        "/auth/2fa/enable",
-        { token: twoFactorSetupCode },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const res = await API.post("/auth/2fa/enable", { token: twoFactorSetupCode });
       setMessage(
         res.data.message ||
           "Two Factor Authentication successfully verified and locked.",
@@ -299,12 +285,7 @@ export function useAuth() {
 
   const handleDisable2FA = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await API.post(
-        "/auth/2fa/disable",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const res = await API.post("/auth/2fa/disable", {});
       setMessage(res.data.message || "2FA status disabled.");
 
       const updatedUser = { ...user, isTwoFactorEnabled: false };

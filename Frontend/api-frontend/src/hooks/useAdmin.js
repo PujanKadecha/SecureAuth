@@ -1,18 +1,24 @@
 import { useState } from "react";
 import API from "../api";
 
-export function useAdmin(clearMessages, setErrorMsg, setMessage) {
+export function useAdmin() {
   const [allUsers, setAllUsers] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
+  const [message, setMessage] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const clearMessages = () => {
+    setMessage("");
+    setErrorMsg("");
+  };
 
   const fetchAdminData = async () => {
     clearMessages();
     try {
-      const token = localStorage.getItem("accessToken");
-      const config = { headers: { Authorization: `Bearer ${token}` } };
+      // Interceptor in api.js attaches the Authorization header automatically
       const [usersRes, logsRes] = await Promise.all([
-        API.get("/users", config),
-        API.get("/users/logs", config),
+        API.get("/users"),
+        API.get("/users/logs"),
       ]);
       setAllUsers(usersRes.data);
       setActivityLogs(logsRes.data);
@@ -30,10 +36,7 @@ export function useAdmin(clearMessages, setErrorMsg, setMessage) {
       return;
     clearMessages();
     try {
-      const token = localStorage.getItem("accessToken");
-      await API.delete(`/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await API.delete(`/users/${userId}`);
       setMessage("User deleted successfully!");
       fetchAdminData();
     } catch (err) {
@@ -47,14 +50,7 @@ export function useAdmin(clearMessages, setErrorMsg, setMessage) {
     if (!window.confirm("Unlock this account?")) return;
     clearMessages();
     try {
-      const token = localStorage.getItem("accessToken");
-      await API.post(
-        `/users/${userId}/unlock`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await API.post(`/users/${userId}/unlock`, {});
       setMessage("Account Unlocked Successfully");
       fetchAdminData();
     } catch (err) {
@@ -73,7 +69,6 @@ export function useAdmin(clearMessages, setErrorMsg, setMessage) {
         new Date(log.timestamp).toLocaleString(),
         log.action,
         log.userEmail || "System",
-
         `"${(log.details || "").replace(/"/g, '""')}"`,
       ].join(","),
     );
@@ -98,12 +93,7 @@ export function useAdmin(clearMessages, setErrorMsg, setMessage) {
     clearMessages();
 
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await API.put(
-        `/users/${userId}/role`,
-        { role: newRole },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const res = await API.put(`/users/${userId}/role`, { role: newRole });
       setMessage(res.data.message || "Role updated successfully");
       fetchAdminData();
     } catch (err) {
@@ -113,13 +103,13 @@ export function useAdmin(clearMessages, setErrorMsg, setMessage) {
 
   return {
     allUsers,
-    setAllUsers,
     activityLogs,
-    setActivityLogs,
+    message,
+    errorMsg,
     fetchAdminData,
     handleDeleteUser,
     handleUnlockUser,
     handleExportLogsCSV,
-    handleChangeRole
+    handleChangeRole,
   };
 }

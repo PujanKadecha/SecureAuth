@@ -2,15 +2,19 @@ function AdminView({
   user,
   allUsers,
   activityLogs,
+  message,
+  errorMsg,
   onRefresh,
   onDeleteUser,
   onUnlockUser,
-  onChangeRole, 
+  onChangeRole,
   onExportLogs,
 }) {
   return (
     <div className="admin-view-container">
       <h2>System Users Management</h2>
+      {message && <div className="alert-success">{message}</div>}
+      {errorMsg && <div className="alert-error">{errorMsg}</div>}
       <button
         onClick={onRefresh}
         className="btn btn-success"
