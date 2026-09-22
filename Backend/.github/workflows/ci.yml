@@ -1,0 +1,90 @@
+name: Auth Service CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-test:
+    name: Backend Test Suite (Auth & Security)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    # Spin up live, isolated containers for Redis and MongoDB
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    steps:
+      # 1. Pull the codebase into the runner
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js 20 runtime
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./backend/package-lock.json
+
+      # 3. Clean install dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4. Run automated test suite with CI environment variables
+      - name: Run Jest Tests
+        env:
+          NODE_ENV: test
+          PORT: 5001
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          MONGODB_URI: mongodb://localhost:27017/auth_service_test
+          JWT_SECRET: ci_production_test_secret_key_987654321
+          JWT_EXPIRE: 15m
+          REFRESH_TOKEN_SECRET: ci_refresh_secret_key_123456
+          REFRESH_TOKEN_EXPIRE: 7d
+        run: npm test --if-present
+
+  frontend-build:
+    name: Frontend Client Build Verification
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend/api-frontend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./frontend/api-frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+
+      # Verify that React client builds without syntax or missing dependency errors
+      - name: Build React Client
+        run: npm run build
