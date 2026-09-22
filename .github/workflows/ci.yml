@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./Backend
 
     # Spin up live, isolated containers for Redis and MongoDB
     services:
@@ -37,13 +37,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js 20 runtime
-      - name: Setup Node.js 20
+      # 2. Setup Node.js 22 runtime
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
-          cache-dependency-path: ./backend/package-lock.json
+          cache-dependency-path: ./Backend/package-lock.json
 
       # 3. Clean install dependencies
       - name: Install Dependencies
@@ -69,18 +69,18 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./frontend/api-frontend
+        working-directory: ./Frontend/api-frontend
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
-          cache-dependency-path: ./frontend/api-frontend/package-lock.json
+          cache-dependency-path: ./Frontend/api-frontend/package-lock.json
 
       - name: Install Frontend Dependencies
         run: npm ci
