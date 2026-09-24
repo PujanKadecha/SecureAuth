@@ -19,6 +19,8 @@ jest.mock("rate-limit-redis", () => ({
 
 process.env.JWT_KEY = process.env.JWT_KEY || "test_jwt_secret_key";
 process.env.CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+process.env.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "test_google_client_id";
+process.env.GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "test_google_client_secret";
 
 let mongoServer;
 

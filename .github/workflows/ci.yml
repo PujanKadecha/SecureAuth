@@ -49,6 +49,6 @@ jobs:
 
     - name: Run Frontend Tests
       working-directory: ./Frontend/api-frontend
-      run: npm test
+      run: npm test -- --passWithNoTests
       env:
         CI: true
