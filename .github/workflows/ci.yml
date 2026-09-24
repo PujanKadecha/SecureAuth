@@ -1,4 +1,4 @@
-name: Backend CI Tests
+name: Fullstack CI Tests
 
 on:
   push:
@@ -7,29 +7,48 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  test:
-    name: Run Node.js Tests
+  backend-test:
+    name: Backend Tests
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [24.x] # Using Node 24 as specified
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js 24
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 24.x
         cache: 'npm'
         cache-dependency-path: Backend/package-lock.json
 
-    - name: Install Dependencies
+    - name: Install Backend Dependencies
       working-directory: ./Backend
       run: npm ci
 
-    - name: Run Jest Tests
+    - name: Run Backend Tests
       working-directory: ./Backend
       run: npm test
+
+  frontend-test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24.x
+        cache: 'npm'
+        cache-dependency-path: Frontend/api-frontend/package-lock.json
+
+    - name: Install Frontend Dependencies
+      working-directory: ./Frontend/api-frontend
+      run: npm ci
+
+    - name: Run Frontend Tests
+      working-directory: ./Frontend/api-frontend
+      run: npm test
+      env:
+        CI: true
