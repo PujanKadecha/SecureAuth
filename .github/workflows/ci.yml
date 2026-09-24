@@ -1,0 +1,84 @@
+name: Auth Service CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-test:
+    name: Backend Jest Suite (MongoDB & Redis Services)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./Backend
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: ./Backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Jest Test Suite
+        env:
+          NODE_ENV: test
+          PORT: 5001
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          MONGODB_URI: mongodb://localhost:27017/auth_service_ci_test
+          JWT_SECRET: ci_test_secret_key_123456789
+          JWT_EXPIRE: 15m
+          REFRESH_TOKEN_SECRET: ci_test_refresh_key_987654321
+          REFRESH_TOKEN_EXPIRE: 7d
+        run: npm test --if-present
+
+  frontend-build:
+    name: Frontend Build Verification
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend/api-frontend
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: ./frontend/api-frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Production Build
+        run: npm run build
