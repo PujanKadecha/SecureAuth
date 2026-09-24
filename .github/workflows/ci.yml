@@ -1,0 +1,35 @@
+name: Backend CI Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    name: Run Node.js Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [24.x] # Using Node 24 as specified
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: Backend/package-lock.json
+
+    - name: Install Dependencies
+      working-directory: ./Backend
+      run: npm ci
+
+    - name: Run Jest Tests
+      working-directory: ./Backend
+      run: npm test
