@@ -91,8 +91,20 @@ exports.unlockUser = catchAsync(async (req, res) => {
 exports.updateUserRole = catchAsync(async (req, res) => {
   const { role } = req.body;
 
+  if (req.user.role !== "superuser") {
+    throw new AppError("Only the superuser can change user roles.", 403);
+  }
+
   if (!role || !["user", "admin"].includes(role)) {
     throw new AppError("Invalid role. Must be 'user' or 'admin'", 400);
+  }
+  const targetUser = await User.findById(req.params.id);
+  if (!targetUser) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (targetUser.isSuperUser || targetUser.role === "superuser") {
+    throw new AppError("Cannot change the role of a superuser account.", 403);
   }
 
   const updatedUser = await User.findByIdAndUpdate(

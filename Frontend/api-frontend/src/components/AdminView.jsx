@@ -1,5 +1,6 @@
 function AdminView({
   user,
+  currentUserRole,
   allUsers,
   activityLogs,
   message,
@@ -70,41 +71,61 @@ function AdminView({
                   <td style={{ padding: "10px", textAlign: "center" }}>
                     {u._id !== currentUserId && (
                       <>
-                        <select
-                          onChange={(e) => onChangeRole(u._id, e.target.value)}
-                          defaultValue={u.role}
-                          style={{
-                            marginRight: "8px",
-                            padding: "5px 8px",
-                            borderRadius: "4px",
-                            border: "1px solid #ddd",
-                          }}
-                        >
-                          <option value="user">User</option>
-                          <option value="admin">Admin</option>
-                        </select>
-
-                        {isLocked && (
-                          <button
-                            onClick={() => onUnlockUser(u._id)}
-                            className="btn btn-warning"
+                        {u.isSuperUser || u.role === "superuser" ? (
+                          <span
                             style={{
-                              marginRight: "8px",
-                              padding: "5px 10px",
+                              display: "inline-block",
+                              padding: "4px 10px",
+                              backgroundColor: "#7c3aed",
+                              color: "#fff",
+                              borderRadius: "12px",
                               fontSize: "12px",
+                              fontWeight: "bold",
                             }}
                           >
-                            Unlock
-                          </button>
-                        )}
+                            Protected
+                          </span>
+                        ) : (
+                          <>
+                            {currentUserRole === "superuser" && (
+                              <select
+                                onChange={(e) => onChangeRole(u._id, e.target.value)}
+                                defaultValue={u.role}
+                                style={{
+                                  marginRight: "8px",
+                                  padding: "5px 8px",
+                                  borderRadius: "4px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                              </select>
+                            )}
 
-                        <button
-                          onClick={() => onDeleteUser(u._id)}
-                          className="btn btn-danger"
-                          style={{ padding: "5px 10px", fontSize: "12px" }}
-                        >
-                          Delete
-                        </button>
+                            {isLocked && (
+                              <button
+                                onClick={() => onUnlockUser(u._id)}
+                                className="btn btn-warning"
+                                style={{
+                                  marginRight: "8px",
+                                  padding: "5px 10px",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                Unlock
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => onDeleteUser(u._id)}
+                              className="btn btn-danger"
+                              style={{ padding: "5px 10px", fontSize: "12px" }}
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                   </td>

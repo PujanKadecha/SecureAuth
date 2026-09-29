@@ -35,7 +35,7 @@ function App() {
             >
               Dashboard
             </button>
-            {auth.user.role === "admin" && (
+            {["admin", "superuser"].includes(auth.user.role) && (
               <button
                 className={`btn-tab ${auth.view === "admin" ? "active-tab" : ""}`}
                 onClick={() => {
@@ -43,7 +43,7 @@ function App() {
                   admin.fetchAdminData();
                 }}
               >
-                Admin Control Panel
+                {auth.user.role === "superuser" ? "Superuser Panel" : "Admin Control Panel"}
               </button>
             )}
             <button
@@ -75,9 +75,10 @@ function App() {
             />
           )}
 
-          {auth.view === "admin" && auth.user.role === "admin" && (
+          {auth.view === "admin" && ["admin", "superuser"].includes(auth.user.role) && (
             <AdminView
               user={auth.user}
+              currentUserRole={auth.user.role}
               allUsers={admin.allUsers}
               activityLogs={admin.activityLogs}
               message={admin.message}

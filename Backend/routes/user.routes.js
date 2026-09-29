@@ -40,7 +40,7 @@ router.put(
   "/:id/role",
   authenticationToken,
   validateRoleChange,
-  authorizeRole("admin"),
+  authorizeRole("superuser"),
   userController.updateUserRole,
 );
 

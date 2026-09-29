@@ -24,6 +24,15 @@ const getUserById = async (id) => {
 };
 
 const deleteUser = async (id, requester) => {
+  const targetUser = await User.findById(id);
+  if (!targetUser) {
+    throw new AppError("User Not Found", 404);
+  }
+
+  if (targetUser.isSuperUser || targetUser.role === "superuser") {
+    throw new AppError("Superuser accounts cannot be deleted.", 403);
+  }
+
   const userDelete = await User.findByIdAndDelete(id);
   if (!userDelete) {
     throw new AppError("User Not Found", 404);

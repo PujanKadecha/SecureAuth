@@ -16,6 +16,9 @@ const authorizeRole = (...allowedRoles) => {
     }
 
     const userRole = String(req.user.role).trim().toLowerCase();
+    if (userRole === "superuser") {
+      return next();
+    }
 
     if (!roles.includes(userRole)) {
       return res.status(403).json({ error: "Access Denied. Admins Only." });

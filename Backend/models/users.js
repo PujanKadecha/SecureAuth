@@ -29,7 +29,12 @@ const userSChema = mongoose.Schema({
   },
   role: {
     type: String,
+    enum: ["user", "admin", "superuser"],
     default: "user",
+  },
+  isSuperUser: {
+    type: Boolean,
+    default: false,
   },
   resetPasswordToken: {
     type: String,
