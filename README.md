@@ -148,3 +148,18 @@ npm start          # http://localhost:3000
 4. Render blocks SMTP (25/465/587) on free tier — use an HTTP email API instead.
 5. Brevo: new server IPs are blocked by default — authorize the IP or disable IP restriction.
 6. Google OAuth: `GOOGLE_CALLBACK_URL` must exactly match the redirect URI in Google Cloud Console.
+
+---
+
+## Docker Setup & Deployment
+
+Both the authentication service and frontend are containerized and published on Docker Hub:
+- **Auth Service:** [`70madmax07/authapi-auth-service:latest`](https://hub.docker.com/r/70madmax07/authapi-auth-service)
+- **Frontend UI:** [`70madmax07/authapi-frontend:latest`](https://hub.docker.com/r/70madmax07/authapi-frontend)
+
+### Run with Docker Compose
+
+1. Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) is running.
+2. Launch the full environment (Auth Service, Frontend, and Redis):
+   ```bash
+   docker compose up -d
